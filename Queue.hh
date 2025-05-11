@@ -18,10 +18,13 @@ public:
         }
         cv.notify_one();
     }
-    std::optional<T> pop() {
+    std::optional<T> pop(int timeoutMs) {
         std::unique_lock lk(mtx);
         while (!stop && q.empty()) {
-            cv.wait(lk);
+            auto status = cv.wait_for(lk, std::chrono::milliseconds(timeoutMs));
+            if (status == std::cv_status::timeout) {
+                return std::nullopt;
+            }
         }
         if (stop) {
             return std::nullopt;

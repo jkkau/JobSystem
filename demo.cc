@@ -1,21 +1,20 @@
 #include "JobSystem.hh"
 #include <iostream>
 #include <chrono>
+#include <thread>
 
 using namespace std::chrono_literals;
 
 int main() {
-    JobSystem js;
-    js.start(2);
+    JobSystem js(2);
+    js.start();
 
-    Job j;
-    j.f = []() {
-        std::cout << "hello job\n";
-    };
-    concurrent_queue::instance()->push(j);
-    concurrent_queue::instance()->push(Job{
-        f : []() {std::cout << "hello again\n"; }
-    });
+    for (int i = 0; i < 10000; i++) {
+        js.submit(Job{
+            f : [i]() {std::cout << "hello again, i = " << i << ", "<< std::this_thread::get_id() << std::endl; }
+        });
+    }
+
 
     std::this_thread::sleep_for(1000ms);
 

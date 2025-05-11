@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(job)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(-Wall -Werror)
 
